@@ -18,13 +18,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-make:
+  build-linux:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-          os: [ "alpine", "archlinux", "fedora", "ubuntu" ]
+        os: [ "alpine", "archlinux", "fedora", "ubuntu" ]
+        build: [ "make", "meson" ]
 
     container:
       image: ${{ matrix.os }}
@@ -34,43 +35,26 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install Dependencies
-        run: |
-          ./scripts/install-deps.sh
+        run: ./scripts/install-deps.sh
 
-      - name: Build
-        run: |
-          make
+      - name: Build (Make)
+        if: matrix.build == 'make'
+        run: make
 
-      - name: Run check
-        run: |
-          make check
+      - name: Run check (Make)
+        if: matrix.build == 'make'
+        run: make check
 
-  build-meson:
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-          os: [ "alpine", "archlinux", "fedora", "ubuntu" ]
-
-    container:
-      image: ${{ matrix.os }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install Dependencies
-        run: |
-          ./scripts/install-deps.sh
-
-      - name: Setup
+      - name: Setup (Meson)
+        if: matrix.build == 'meson'
         run: meson setup -D python=enabled -D yaml=enabled build
 
-      - name: Build
+      - name: Build (Meson)
+        if: matrix.build == 'meson'
         run: meson compile -C build
 
-      - name: Run check
+      - name: Run check (Meson)
+        if: matrix.build == 'meson'
         run: if ! meson test -C build; then cat build/meson-logs/testlog.txt; false; fi
 
   build-macos:
@@ -145,15 +129,16 @@ jobs:
         meson setup -Dtools=true -Dtests=false build
         meson compile -C build
 
-  build-freebsd-make:
+  build-freebsd:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         version: [ "13.5", "14.3" ]
+        build: [ "make", "meson" ]
 
-    name: FreeBSD ${{ matrix.version }} make build
+    name: FreeBSD ${{ matrix.version }} ${{ matrix.build }} build
 
     steps:
       - name: Checkout
@@ -170,47 +155,27 @@ jobs:
         shell: cpa.sh {0}
         run: sudo ./scripts/install-deps.sh
 
-      - name: Build
+      - name: Build (Make)
+        if: matrix.build == 'make'
         shell: cpa.sh {0}
         run: gmake
 
-      - name: Run check
+      - name: Run check (Make)
+        if: matrix.build == 'make'
         shell: cpa.sh {0}
         run: gmake check
 
-  build-freebsd-meson:
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [ "13.5", "14.3" ]
-
-    name: FreeBSD ${{ matrix.version }} meson build
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Start VM
-        uses: cross-platform-actions/action@v1
-        with:
-          operating_system: freebsd
-          version: ${{ matrix.version }}
-          shell: sh
-
-      - name: Install Dependencies
-        shell: cpa.sh {0}
-        run: sudo ./scripts/install-deps.sh
-
-      - name: Setup
+      - name: Setup (Meson)
+        if: matrix.build == 'meson'
         shell: cpa.sh {0}
         run: meson setup -D python=enabled -D yaml=enabled build
 
-      - name: Build
+      - name: Build (Meson)
+        if: matrix.build == 'meson'
         shell: cpa.sh {0}
         run: meson compile -C build
 
-      - name: Run check
+      - name: Run check (Meson)
+        if: matrix.build == 'meson'
         shell: cpa.sh {0}
         run: if ! meson test -C build; then cat build/meson-logs/testlog.txt; false; fi
