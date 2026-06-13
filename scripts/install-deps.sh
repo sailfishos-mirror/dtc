@@ -1,6 +1,12 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+if [ "$(uname -s)" = "Darwin" ]
+then
+    brew install --quiet libyaml swig meson ninja pkg-config
+    exit 0
+fi
+
 if [ "$(uname -s)" = "FreeBSD" ]
 then
     pkg install -y git gmake flex bison meson ninja \
