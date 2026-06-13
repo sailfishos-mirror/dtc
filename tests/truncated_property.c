@@ -13,17 +13,15 @@
 #include <libfdt.h>
 
 #include "tests.h"
-#include "testdata.h"
 
 int main(int argc, char *argv[])
 {
-	void *fdt = &truncated_property;
+	void *fdt;
 	const void *prop;
 	int len;
 
 	test_init(argc, argv);
-
-	vg_prepare_blob(fdt, fdt_totalsize(fdt));
+	fdt = load_blob_arg(argc, argv);
 
 	prop = fdt_getprop(fdt, 0, "truncated", &len);
 	if (prop)

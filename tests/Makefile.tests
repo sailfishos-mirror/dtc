@@ -29,20 +29,17 @@ LIB_TESTS_L = get_mem_rsv \
 	subnode_iterate \
 	overlay overlay_bad_fixup \
 	check_path check_header check_full \
-	fs_tree1
-LIB_TESTS = $(LIB_TESTS_L:%=$(TESTS_PREFIX)%)
-
-LIBTREE_TESTS_L = truncated_property truncated_string \
+	fs_tree1 \
+	truncated_property truncated_string \
 	truncated_memrsv unterminated_memrsv
-
-LIBTREE_TESTS = $(LIBTREE_TESTS_L:%=$(TESTS_PREFIX)%)
+LIB_TESTS = $(LIB_TESTS_L:%=$(TESTS_PREFIX)%)
 
 ifneq ($(STATIC_BUILD),1)
 	DL_LIB_TESTS_L = asm_tree_dump value-labels
 	DL_LIB_TESTS = $(DL_LIB_TESTS_L:%=$(TESTS_PREFIX)%)
 endif
 
-TESTS = $(LIB_TESTS) $(LIBTREE_TESTS) $(DL_LIB_TESTS)
+TESTS = $(LIB_TESTS) $(DL_LIB_TESTS)
 
 TESTS_TREES_L = test_tree1.dtb bad_node_char.dtb bad_node_format.dtb \
 	bad_prop_char.dtb ovf_size_strings.dtb truncated_property.dtb \
@@ -73,9 +70,6 @@ LIBDL = -ldl
 $(DL_LIB_TESTS): %: %.o $(TESTS_PREFIX)testutils.o util.o $(LIBFDT_dep)
 	@$(VECHO) LD [libdl] $@
 	$(LINK.c) -o $@ $^ $(LIBDL)
-
-$(LIBTREE_TESTS): %: $(TESTS_PREFIX)testutils.o $(TESTS_PREFIX)trees.o \
-		util.o $(LIBFDT_dep)
 
 $(TESTS_PREFIX)dumptrees: $(TESTS_PREFIX)trees.o
 

@@ -492,10 +492,10 @@ libfdt_tests () {
     run_test appendprop_addrrange unit-addr-without-reg.dtb 2 1 3
 
     # Tests for behaviour on various sorts of corrupted trees
-    run_test truncated_property
-    run_test truncated_string
-    run_test truncated_memrsv
-    run_test unterminated_memrsv
+    run_test truncated_property truncated_property.dtb
+    run_test truncated_string truncated_string.dtb
+    run_test truncated_memrsv truncated_memrsv.dtb
+    run_test unterminated_memrsv unterminated_memrsv.dtb
 
     # Check aliases support in fdt_path_offset
     run_dtc_test -I dts -O dtb -o aliases.dtb "$SRCDIR/aliases.dts"

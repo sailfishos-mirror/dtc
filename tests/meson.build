@@ -22,7 +22,7 @@ dumptrees_dtb = custom_target(
   ]
 )
 
-testutil_dep = declare_dependency(sources: ['testutils.c'], link_with: trees)
+testutil_dep = declare_dependency(sources: ['testutils.c'])
 
 tests = [
   'add_subnode_with_nops',
@@ -90,14 +90,11 @@ tests = [
   'supernode_atdepth_offset',
   'sw_states',
   'sw_tree1',
-  'utilfdt_test',
-]
-
-tests += [
   'truncated_memrsv',
   'truncated_property',
   'truncated_string',
   'unterminated_memrsv',
+  'utilfdt_test',
 ]
 
 test_deps = [testutil_dep, util_dep, libfdt_dep]

@@ -13,18 +13,16 @@
 #include <libfdt.h>
 
 #include "tests.h"
-#include "testdata.h"
 
 int main(int argc, char *argv[])
 {
-	void *fdt = &truncated_string;
+	void *fdt;
 	const struct fdt_property *good, *bad;
 	int off, len;
 	const char *name;
 
 	test_init(argc, argv);
-
-	vg_prepare_blob(fdt, fdt_totalsize(fdt));
+	fdt = load_blob_arg(argc, argv);
 
 	off = fdt_first_property_offset(fdt, 0);
 	good = fdt_get_property_by_offset(fdt, off, NULL);

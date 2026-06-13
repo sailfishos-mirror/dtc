@@ -22,12 +22,13 @@
 
 int main(int argc, char *argv[])
 {
-	void *fdt = &unterminated_memrsv;
+	void *fdt;
 	void *buf;
 	int err;
 	uint64_t addr, size;
 
 	test_init(argc, argv);
+	fdt = load_blob_arg(argc, argv);
 
 	err = fdt_check_header(fdt);
 	if (err != 0)
