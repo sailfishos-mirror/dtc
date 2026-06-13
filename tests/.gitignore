@@ -69,6 +69,7 @@ tmp.*
 /supernode_atdepth_offset
 /sw_tree1
 /sw_states
+/treegen
 /truncated_property
 /truncated_string
 /truncated_memrsv

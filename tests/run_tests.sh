@@ -1091,6 +1091,16 @@ fdtoverlay_tests() {
     run_wrap_test test "$bd" = "$pd"
 }
 
+treegen_tests () {
+    mkdir -p treegen-out
+    run_wrap_test ./treegen treegen-out
+    for tree in test_tree1 bad_node_char bad_node_format bad_prop_char \
+		ovf_size_strings truncated_property truncated_string \
+		truncated_memrsv unterminated_memrsv two_roots named_root; do
+	run_wrap_test cmp $tree.dtb treegen-out/$tree.dtb
+    done
+}
+
 pylibfdt_tests () {
     run_dtc_test -I dts -O dtb -o test_props.dtb "$SRCDIR/test_props.dts"
     TMP=/tmp/tests.stderr.$$
@@ -1130,7 +1140,7 @@ while getopts "vt:me" ARG ; do
 done
 
 if [ -z "$TESTSETS" ]; then
-    TESTSETS="libfdt utilfdt dtc dtbs_equal fdtget fdtput fdtdump fdtoverlay"
+    TESTSETS="libfdt utilfdt dtc dtbs_equal fdtget fdtput fdtdump fdtoverlay treegen"
 
     # Test pylibfdt if the libfdt Python module is available.
     if ! $no_python; then
@@ -1169,6 +1179,9 @@ for set in $TESTSETS; do
 	    ;;
         "fdtoverlay")
 	    fdtoverlay_tests
+	    ;;
+	"treegen")
+	    treegen_tests
 	    ;;
     esac
 done

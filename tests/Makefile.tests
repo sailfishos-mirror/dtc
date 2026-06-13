@@ -54,13 +54,13 @@ TESTS_DEPFILES = $(TESTS:%=%.d) \
 
 TESTS_CLEANFILES_L = $(STD_CLEANFILES) \
 	*.dtb *.test.dts *.test.dt.yaml *.dtsv1 tmp.* *.bak \
-	dumptrees
+	dumptrees treegen
 TESTS_CLEANFILES = $(TESTS) $(TESTS_CLEANFILES_L:%=$(TESTS_PREFIX)%)
-TESTS_CLEANDIRS_L = fs
+TESTS_CLEANDIRS_L = fs treegen-out
 TESTS_CLEANDIRS = $(TESTS_CLEANDIRS_L:%=$(TESTS_PREFIX)%)
 
 .PHONY: tests
-tests:	$(TESTS) $(TESTS_TREES)
+tests:	$(TESTS) $(TESTS_TREES) $(TESTS_PREFIX)treegen
 
 $(LIB_TESTS): %: $(TESTS_PREFIX)testutils.o util.o $(LIBFDT_dep)
 
@@ -70,6 +70,8 @@ LIBDL = -ldl
 $(DL_LIB_TESTS): %: %.o $(TESTS_PREFIX)testutils.o util.o $(LIBFDT_dep)
 	@$(VECHO) LD [libdl] $@
 	$(LINK.c) -o $@ $^ $(LIBDL)
+
+$(TESTS_PREFIX)treegen:
 
 $(TESTS_PREFIX)dumptrees: $(TESTS_PREFIX)trees.o
 
