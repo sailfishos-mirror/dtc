@@ -18,6 +18,7 @@ dumptrees_dtb = custom_target(
     'truncated_property.dtb',
     'truncated_string.dtb',
     'truncated_memrsv.dtb',
+    'unterminated_memrsv.dtb',
   ]
 )
 
