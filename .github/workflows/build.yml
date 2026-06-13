@@ -144,3 +144,73 @@ jobs:
       run: |
         meson setup -Dtools=true -Dtests=false build
         meson compile -C build
+
+  build-freebsd-make:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ "13.5", "14.3" ]
+
+    name: FreeBSD ${{ matrix.version }} make build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Start VM
+        uses: cross-platform-actions/action@v1
+        with:
+          operating_system: freebsd
+          version: ${{ matrix.version }}
+          shell: sh
+
+      - name: Install Dependencies
+        shell: cpa.sh {0}
+        run: sudo ./scripts/install-deps.sh
+
+      - name: Build
+        shell: cpa.sh {0}
+        run: gmake
+
+      - name: Run check
+        shell: cpa.sh {0}
+        run: gmake check
+
+  build-freebsd-meson:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ "13.5", "14.3" ]
+
+    name: FreeBSD ${{ matrix.version }} meson build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Start VM
+        uses: cross-platform-actions/action@v1
+        with:
+          operating_system: freebsd
+          version: ${{ matrix.version }}
+          shell: sh
+
+      - name: Install Dependencies
+        shell: cpa.sh {0}
+        run: sudo ./scripts/install-deps.sh
+
+      - name: Setup
+        shell: cpa.sh {0}
+        run: meson setup -D python=enabled -D yaml=enabled build
+
+      - name: Build
+        shell: cpa.sh {0}
+        run: meson compile -C build
+
+      - name: Run check
+        shell: cpa.sh {0}
+        run: if ! meson test -C build; then cat build/meson-logs/testlog.txt; false; fi

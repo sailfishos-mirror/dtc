@@ -1,6 +1,13 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+if [ "$(uname -s)" = "FreeBSD" ]
+then
+    pkg install -y git gmake flex bison meson ninja \
+    python3 py312-setuptools swig libyaml pkgconf
+    exit 0
+fi
+
 if [ -f /etc/os-release ]
 then
     . /etc/os-release
