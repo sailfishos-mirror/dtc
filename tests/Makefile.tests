@@ -50,17 +50,17 @@ TESTS_TREES = $(TESTS_TREES_L:%=$(TESTS_PREFIX)%)
 TESTS_TARGETS = $(TESTS) $(TESTS_TREES)
 
 TESTS_DEPFILES = $(TESTS:%=%.d) \
-	$(addprefix $(TESTS_PREFIX),testutils.d trees.d dumptrees.d)
+	$(addprefix $(TESTS_PREFIX),testutils.d)
 
 TESTS_CLEANFILES_L = $(STD_CLEANFILES) \
 	*.dtb *.test.dts *.test.dt.yaml *.dtsv1 tmp.* *.bak \
-	dumptrees treegen
+	treegen
 TESTS_CLEANFILES = $(TESTS) $(TESTS_CLEANFILES_L:%=$(TESTS_PREFIX)%)
-TESTS_CLEANDIRS_L = fs treegen-out
+TESTS_CLEANDIRS_L = fs
 TESTS_CLEANDIRS = $(TESTS_CLEANDIRS_L:%=$(TESTS_PREFIX)%)
 
 .PHONY: tests
-tests:	$(TESTS) $(TESTS_TREES) $(TESTS_PREFIX)treegen
+tests:	$(TESTS) $(TESTS_TREES)
 
 $(LIB_TESTS): %: $(TESTS_PREFIX)testutils.o util.o $(LIBFDT_dep)
 
@@ -71,13 +71,9 @@ $(DL_LIB_TESTS): %: %.o $(TESTS_PREFIX)testutils.o util.o $(LIBFDT_dep)
 	@$(VECHO) LD [libdl] $@
 	$(LINK.c) -o $@ $^ $(LIBDL)
 
-$(TESTS_PREFIX)treegen:
-
-$(TESTS_PREFIX)dumptrees: $(TESTS_PREFIX)trees.o
-
-$(TESTS_TREES): $(TESTS_PREFIX)dumptrees
-	@$(VECHO) DUMPTREES
-	cd $(TESTS_PREFIX); ./dumptrees . >/dev/null
+$(TESTS_TREES): $(TESTS_PREFIX)treegen
+	@$(VECHO) TREEGEN
+	cd $(TESTS_PREFIX); ./treegen . >/dev/null
 
 tests_clean:
 	@$(VECHO) CLEAN "(tests)"

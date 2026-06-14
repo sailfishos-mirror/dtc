@@ -1,28 +1,12 @@
-#ifdef __ASSEMBLER__
-#define ASM_CONST_LL(x)	(x)
-#else
-#define ASM_CONST_LL(x)	(x##ULL)
-#endif
-
-#define TEST_ADDR_1H	ASM_CONST_LL(0xdeadbeef)
-#define TEST_ADDR_1L	ASM_CONST_LL(0x00000000)
-#define TEST_ADDR_1	((TEST_ADDR_1H << 32) | TEST_ADDR_1L)
-#define TEST_SIZE_1H	ASM_CONST_LL(0x00000000)
-#define TEST_SIZE_1L	ASM_CONST_LL(0x00100000)
-#define TEST_SIZE_1	((TEST_SIZE_1H << 32) | TEST_SIZE_1L)
-#define TEST_ADDR_2H	ASM_CONST_LL(0)
-#define TEST_ADDR_2L	ASM_CONST_LL(123456789)
-#define TEST_ADDR_2	((TEST_ADDR_2H << 32) | TEST_ADDR_2L)
-#define TEST_SIZE_2H	ASM_CONST_LL(0)
-#define TEST_SIZE_2L	ASM_CONST_LL(010000)
-#define TEST_SIZE_2	((TEST_SIZE_2H << 32) | TEST_SIZE_2L)
+#define TEST_ADDR_1	0xdeadbeef00000000ULL
+#define TEST_SIZE_1	0x0000000000100000ULL
+#define TEST_ADDR_2	123456789ULL
+#define TEST_SIZE_2	010000ULL
 
 #define TEST_VALUE_1	0xdeadbeef
 #define TEST_VALUE_2	123456789
 
-#define TEST_VALUE64_1H	ASM_CONST_LL(0xdeadbeef)
-#define TEST_VALUE64_1L	ASM_CONST_LL(0x01abcdef)
-#define TEST_VALUE64_1	((TEST_VALUE64_1H << 32) | TEST_VALUE64_1L)
+#define TEST_VALUE64_1	0xdeadbeef01abcdefULL
 
 #define PHANDLE_1	0x2000
 #define PHANDLE_2	0x2001
@@ -45,17 +29,3 @@
 #define TEST_MEMREGION_SIZE	0x9abcdef0
 #define TEST_MEMREGION_SIZE_HI	0x0fedcba900000000
 #define TEST_MEMREGION_SIZE_INC	0x1000
-
-#ifndef __ASSEMBLER__
-extern struct fdt_header test_tree1;
-extern struct fdt_header truncated_property;
-extern struct fdt_header bad_node_char;
-extern struct fdt_header bad_node_format;
-extern struct fdt_header bad_prop_char;
-extern struct fdt_header ovf_size_strings;
-extern struct fdt_header truncated_string;
-extern struct fdt_header truncated_memrsv;
-extern struct fdt_header unterminated_memrsv;
-extern struct fdt_header two_roots;
-extern struct fdt_header named_root;
-#endif /* ! __ASSEMBLER__ */

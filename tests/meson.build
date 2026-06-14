@@ -1,18 +1,10 @@
-trees = static_library('trees', files('trees.S'),
-                       build_by_default: false,
-                       include_directories: libfdt_inc)
-
-dumptrees = executable('dumptrees', files('dumptrees.c'),
-                       build_by_default: false,
-                       link_with: trees, dependencies: libfdt_dep)
-
 treegen = executable('treegen', files('treegen.c'),
                      build_by_default: false,
                      dependencies: [util_dep])
 
-dumptrees_dtb = custom_target(
-  'dumptrees',
-  command: [dumptrees, meson.current_build_dir()],
+treegen_dtb = custom_target(
+  'treegen_dtb',
+  command: [treegen, meson.current_build_dir()],
   output: [
     'test_tree1.dtb',
     'bad_node_char.dtb',
@@ -23,6 +15,8 @@ dumptrees_dtb = custom_target(
     'truncated_string.dtb',
     'truncated_memrsv.dtb',
     'unterminated_memrsv.dtb',
+    'two_roots.dtb',
+    'named_root.dtb',
   ]
 )
 
@@ -144,10 +138,9 @@ run_test_types = [
   'fdtput',
   'fdtdump',
   'fdtoverlay',
-  'treegen'
 ]
 run_test_deps = [
-  dtc_tools, dumptrees_dtb, tests_exe, treegen
+  dtc_tools, treegen_dtb, tests_exe,
 ]
 if pylibfdt_enabled
   run_test_types += 'pylibfdt'
